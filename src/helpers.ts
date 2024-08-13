@@ -1,7 +1,6 @@
 import merge from "lodash/merge";
 import React from "react";
 import ReactDOM from "react-dom";
-
 import { createRoot } from "react-dom/client";
 import {
   differenceInCalendarMonths,
@@ -26,9 +25,10 @@ import {
   toLocaleCurrency,
   toLocaleStringNumb,
   toNumber,
-} from "./fp";
+} from './fp';
 
 import { BASE_API_URL } from "env";
+
 
 export const formatNumber = (x: number, decimal = 2) => {
   if (isNaN(x)) return x;
