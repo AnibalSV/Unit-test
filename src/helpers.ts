@@ -26,7 +26,7 @@ import {
   toLocaleCurrency,
   toLocaleStringNumb,
   toNumber,
-} from "fp";
+} from "./fp";
 
 import { BASE_API_URL } from "env";
 
