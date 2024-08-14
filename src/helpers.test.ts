@@ -1,6 +1,6 @@
 // sum.test.js
 import { expect, test, describe, vi, beforeAll } from "vitest";
-import { formatNumber,isNumber, cloneStringify, searchParamsToObj, calcDiscrepancy, currencyFormatter} from "./helpers";
+import { formatNumber,isNumber, cloneStringify, searchParamsToObj, calcDiscrepancy, currencyFormatter, capitalize, randomChoice, translate} from "./helpers";
 
 describe("formatNumber:", () => {
   // Mocks para navigator.languages
@@ -30,39 +30,147 @@ describe("isNumber:", () => {
     expect(isNumber("Hola")).toBe(false);
   });
 
-  test("2-when argument is valid.", () => {
+  test("2-when argument is valid(negative, decimal, long).", () => {
     expect(isNumber(-1896567.269)).toBe(true);
   });
 });
 
 describe('cloneStringify:', () => {
 
-  test('1-when argument is valid.', () => {
-    expect(cloneStringify({nombre: 'Albert', edad: 36})).toEqual({nombre: 'Albert', edad: 36});
+  test('when cloning an object inside another object', () => {
+    expect(cloneStringify({key1: 'value', key2: {key3: 'value'} })).toEqual({key1: 'value', key2: {key3: 'value'} });
+  })
+
+  test('when to clone an array', () => {
+    expect(cloneStringify([4, 1, { a: 3 }])).toEqual([4, 1, { a: 3 }])
+  })
+
+  test('changes in the clone cannot affect the original', () => {
+    const original = {a: 22, b:'abcd'};
+    const clone = cloneStringify(original);
+    clone.a = 100;
+    expect(original.a).toBe(22);
+    
+  })
+
+  test('when handling primitive data', () => {
+    expect(null).toBe(null);
+    expect(true).toBe(true);
+    expect(23).toBe(23);
+    expect('abcd').toBe('abcd');
   })
 })
 
-/*describe('searchParamsToObj:', () => {
-  test('1-When argument is valid.', () => {
-    expect(searchParamsToObj()).toBe()
+describe('searchParamsToObj:', () => {
+  test('when convert SearchParams to an object correctly.', () => {
+    const searchParams = new URLSearchParams('key1=value1&key2=value2');
+    const expected = { key1: 'value1', key2: 'value2' };
+    expect(searchParamsToObj(searchParams)).toEqual(expected);
+  });
+
+  test('when handling multiple values for a single key.', () => {
+    const searchParams = new URLSearchParams('key1=value1&key1=value2&key1=value3');
+    const expected = { key1: 'value1', key1: 'value2', key1:'value3'};
+    expect(searchParamsToObj(searchParams)).toEqual(expected);
   })
-})*/
+
+  test('when handling values with space and special characters', () => {
+    const searchParams = new URLSearchParams('key1=value%201&key2=value%40value');
+    const expected = { key1: 'value 1', key2: 'value@value'};
+    expect(searchParamsToObj(searchParams)).toEqual(expected);
+  })
+})
 
 describe('calcDiscrepancy:', () => {
-  test('1-when argument is not number.', () => {
+  test('1-when one or more arguments are not a number.', () => {
     expect(calcDiscrepancy('20', '6')).toBe(0.7);
     expect(calcDiscrepancy(NaN, '6')).toBe(NaN);
     expect(calcDiscrepancy('20', undefined)).toBe(NaN);
     expect(calcDiscrepancy('20', 6)).toBe(0.7);
+    expect(calcDiscrepancy(NaN, NaN)).toBe(NaN);
   })
 
-  test('2-when argument is valid.', () => {
-    expect(calcDiscrepancy(20,6)).toBe(0.7);
+  test('when one or more arguments are negative', () => {
+    expect(calcDiscrepancy(-20, 6)).toBe(4.333333333333333);
+    expect(calcDiscrepancy(20,  -6)).toBe(1.3);
+    expect(calcDiscrepancy(-20, -6)).toBe(-2.3333333333333335);
+  })
+
+  test('when arguments are equal', () => {
+    expect(calcDiscrepancy(2, 2)).toBe(0);
+  })
+
+  test('when one or more arguments is zero', () => {
+    expect(calcDiscrepancy(0, 2)).toBe(1);
+    expect(calcDiscrepancy(2, 0)).toBe(1)
+  })
+
+})
+
+//Es necesario obtener el prefix de acuerdo a la zona donde se encuentra el usuario.
+describe('currencyFormatter:', () => {
+  // Mock de formatNumber para pruebas
+
+  test('when one or more arguments are not numbers', () => {
+    expect(currencyFormatter('USD', 1000, 1)).toBe('$1,000.00');
   })
 })
 
-/*describe('currencyFormatter:', () => {
-  test('', () => {
-    expect(currencyFormatter()).toBe();
+describe('capitalize', () => {
+
+  test('when the argument is a normal text string', () => {
+    expect(capitalize('string')).toBe('String');
+    expect(capitalize('string')).not.toBe('string');
   })
-})*/
+
+  test('when  the argument is a text string that begins with a capital letter', () => {
+    expect(capitalize('String')).toBe('String');
+  })
+
+  test('when argument is not a text string', () => {
+    expect(capitalize('')). toBe('');
+    expect(capitalize(123)).toBe(123);
+    expect(capitalize(null)).toBe(null);
+    expect(capitalize(undefined)).toBe(undefined);
+  })
+
+  test('when the argument starts with a blank space', () => {
+    expect(capitalize(' string')).toBe('String')
+  })
+
+  test('when the argument contains special characters', () => {
+    expect(capitalize('s%tring')).toBe('S%tring');
+    expect(capitalize('&string')).toBe('&string');
+  })
+  })
+
+  describe('randomChoice', () => {
+
+    test('when argument is not valid', () => {
+      expect(randomChoice(NaN)).toBe(false);
+      expect(randomChoice(null)).toBe(false);
+      expect(randomChoice(0)).toBe(true);
+      expect(randomChoice(undefined)).toBe(false);
+    })
+
+    test('when argument is negative', () => {
+      expect(randomChoice(-0.1)).toBe(true);
+    })
+  })
+
+  describe('translate', () => {
+   
+    test('when argument is valid', () => {
+      expect(translate('impressions')).toBe('Server Impressions');
+    })
+
+    test('when argument is not valid', () => {
+      expect(translate('string')).toBe('string');
+      expect(translate('')).toBe('');
+      expect(translate(null)).toBe(null);
+      expect(translate(undefined)).toBe(undefined);
+      expect(translate(NaN)).toBe(NaN);
+      expect(translate(123)).toBe(123);
+
+    })
+  })
