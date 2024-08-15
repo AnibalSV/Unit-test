@@ -1,6 +1,6 @@
 // sum.test.js
 import { expect, test, describe, vi, beforeAll } from "vitest";
-import { formatNumber,isNumber, cloneStringify, searchParamsToObj, calcDiscrepancy, currencyFormatter, capitalize, randomChoice, translate} from "./helpers";
+import { formatNumber,isNumber, cloneStringify, searchParamsToObj, calcDiscrepancy, currencyFormatter, capitalize, randomChoice, translate, numberToPercentage} from "./helpers";
 
 describe("formatNumber:", () => {
   // Mocks para navigator.languages
@@ -107,9 +107,8 @@ describe('calcDiscrepancy:', () => {
 
 })
 
-//Es necesario obtener el prefix de acuerdo a la zona donde se encuentra el usuario.
 describe('currencyFormatter:', () => {
-  // Mock de formatNumber para pruebas
+  // Solo funciona con prefix = 'USD', no funciona con '€' ni con '$'
 
   test('when one or more arguments are not numbers', () => {
     expect(currencyFormatter('USD', 1000, 1)).toBe('$1,000.00');
@@ -117,6 +116,7 @@ describe('currencyFormatter:', () => {
 })
 
 describe('capitalize', () => {
+  //Error cuando hay un espacio vacio al inicio del string.
 
   test('when the argument is a normal text string', () => {
     expect(capitalize('string')).toBe('String');
@@ -145,7 +145,7 @@ describe('capitalize', () => {
   })
 
   describe('randomChoice', () => {
-
+    //Si el argumento es null, el resultado deberia ser false.
     test('when argument is not valid', () => {
       expect(randomChoice(NaN)).toBe(false);
       expect(randomChoice(null)).toBe(false);
@@ -172,5 +172,18 @@ describe('capitalize', () => {
       expect(translate(NaN)).toBe(NaN);
       expect(translate(123)).toBe(123);
 
+    })
+  })
+
+  describe('numberToPercentage', () => {
+    
+    test('when argument is not valid', () => {
+      expect(numberToPercentage(NaN)).toBe('');
+      expect(numberToPercentage(undefined)).toBe('');
+      expect(numberToPercentage('')).toBe('');
+    })
+
+    test('when argument is string now', () => {
+      expect(numberToPercentage('10')).toBe('10.00%');
     })
   })
