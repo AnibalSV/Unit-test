@@ -174,3 +174,7 @@ describe('capitalize', () => {
 
     })
   })
+
+  test('this is a test that will fail', () => {
+    expect(1).toBe(2);
+  });
