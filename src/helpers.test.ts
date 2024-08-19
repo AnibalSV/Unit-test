@@ -178,6 +178,7 @@ describe('capitalize', () => {
     })
   })
 
+
   describe('numberToPercentage', () => {
     
     test('when argument is not valid', () => {
