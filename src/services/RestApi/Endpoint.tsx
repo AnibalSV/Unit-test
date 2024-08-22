@@ -1,6 +1,6 @@
 import fetcher from './fetcher';
 import { type EndpointProps, type UrlParams } from './interfaces';
-import { mergeDeep } from '../../utils/helpers';
+import { mergeDeep } from '../../helpers';
 
 class Endpoint {
   static alias = {

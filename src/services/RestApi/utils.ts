@@ -1,4 +1,4 @@
-import { isEmptyObject } from "utils/helpers";
+import { isEmptyObject } from "../../helpers";
 import { type UrlParams } from "./interfaces";
 
 export const handleError = async (res: Response) => {

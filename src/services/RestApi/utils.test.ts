@@ -1,4 +1,7 @@
 import { buildUrl, handleError, handleJson, replaceUrlParams } from './utils';
+import { test, expect } from 'vitest';
+import jest from 'jest-mock';
+
 
 test('handleError throws an Error', async () => {
   const res = {
