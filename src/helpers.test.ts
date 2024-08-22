@@ -1,11 +1,10 @@
 // sum.test.js
 import { expect, test, describe, vi, beforeAll } from "vitest";
-import { formatNumber,isNumber, cloneStringify, searchParamsToObj, calcDiscrepancy, currencyFormatter, capitalize, randomChoice, translate, numberToPercentage, avgCalc, sumCalc, getDateTimeFromPeriod} from "./helpers";
+import { formatNumber,isNumber, cloneStringify, searchParamsToObj, calcDiscrepancy, currencyFormatter, capitalize, randomChoice, translate, numberToPercentage, avgCalc, sumCalc, toLocalDate, getAutoTimeRange, isEmptyObject, createRandomNumber} from "./helpers";
 
 describe("formatNumber:", () => {
-  // Mocks para navigator.languages
   beforeAll(() => {
-    vi.stubGlobal("navigator", { languages: ["en-US"] }); // Mockea navigator.languages
+    vi.stubGlobal("navigator", { languages: ["en-US"] });
   });
 
   test('1-when argument is not number.', () => {
@@ -19,9 +18,8 @@ describe("formatNumber:", () => {
 });
 
 describe("isNumber:", () => {
-  // Mocks para navigator.languages
   beforeAll(() => {
-    vi.stubGlobal("navigator", { languages: ["en-US"] }); // Mockea navigator.languages
+    vi.stubGlobal("navigator", { languages: ["en-US"] });
   });
 
   test("1-when argument is not number.", () => {
@@ -108,7 +106,7 @@ describe('calcDiscrepancy:', () => {
 })
 
 describe('currencyFormatter:', () => {
-  // Solo funciona con prefix = 'USD', no funciona con '€' ni con '$'
+  // Only works with prefix = 'USD', does not work with '€' or '$'.
 
   test('when one or more arguments are not numbers', () => {
     expect(currencyFormatter('USD', 1000, 1)).toBe('$1,000.00');
@@ -116,7 +114,7 @@ describe('currencyFormatter:', () => {
 })
 
 describe('capitalize', () => {
-  //Error cuando hay un espacio vacio al inicio del string.
+  //Error when there is an empty space at the beginning of the string.
 
   test('when the argument is a normal text string', () => {
     expect(capitalize('string')).toBe('String');
@@ -136,7 +134,7 @@ describe('capitalize', () => {
 
   test.skip('when the argument starts with a blank space', () => {
     expect(capitalize(' string')).toBe('String')
-  }) //Aqui hay un error que debe ser resuelto.
+  }) //There is an error here that needs to be resolved.
 
   test('when the argument contains special characters', () => {
     expect(capitalize('s%tring')).toBe('S%tring');
@@ -145,7 +143,7 @@ describe('capitalize', () => {
   })
 
   describe('randomChoice', () => {
-    //Si el argumento es null, el resultado deberia ser false.
+    //If the argument is null, the result should be false.
     test('when argument is not valid', () => {
       expect(randomChoice(NaN)).toBe(false);
       expect(randomChoice(0)).toBe(true);
@@ -154,7 +152,7 @@ describe('capitalize', () => {
 
     test.skip('when arguments is null', () => {
       expect(randomChoice(null)).toBe(false);
-    })//Aqui hay un error que debe ser resuelto.
+    })//There is an error here that needs to be resolved.
 
     test('when argument is negative', () => {
       expect(randomChoice(-0.1)).toBe(true);
@@ -206,7 +204,7 @@ describe('capitalize', () => {
     test.skip('when arguments is empty', () => {
       expect(avgCalc([])).toBe(NaN);
       expect(avgCalc(['', ''])).toBe(NaN);
-    })//Aqui hay un error que debe ser resuelto.
+    })//There is an error here that needs to be resolved.
 
     test('when arguments is negative', () => {
       expect(avgCalc([-10, -2])). toBe(-6);
@@ -223,7 +221,7 @@ describe('capitalize', () => {
     test.skip('when one or more arguments is empty', () => {
       expect(sumCalc([])).toBe(NaN);
       expect(sumCalc([''])).toBe(NaN);
-    })//Aqui hay un error que debe ser resuelto.
+    })//There is an error here that needs to be resolved.
 
     test('when one or more arguments is negative' , () => {
       expect(sumCalc([-10, -100])).toBe(-110);
